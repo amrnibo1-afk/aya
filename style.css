@@ -80,6 +80,7 @@ body {
     background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
     color: white;
     animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Snappier movement */
 }
 
 .btn-no:hover {

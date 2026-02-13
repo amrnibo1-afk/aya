@@ -3,6 +3,20 @@ const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 const celebration = document.getElementById('celebration');
 
+const noTexts = [
+    "لا؟",
+    "متأكدة؟",
+    "فكري تاني بس..",
+    "لو قلتي لا هزعل 🥺",
+    "يا لهوي ليه كدة؟",
+    "طب عشان خاطري؟",
+    "هعيط والله 😭",
+    "لا لا لا مفيش لا!",
+    "مش هسيبك تقولي لا 😂"
+];
+
+let textIndex = 0;
+
 // Initial sizes (in rem for responsiveness)
 let yesBtnSize = 1.5;
 let noBtnSize = 1.5;
@@ -12,18 +26,47 @@ let noBtnPadding = { vertical: 20, horizontal: 40 };
 // Track click count for scaling
 let clickCount = 0;
 
-// Handle "No" button click
+// Function to move the No button to a random position
+function moveButton() {
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+    
+    const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+    const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+    
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = `${randomX}px`;
+    noBtn.style.top = `${randomY}px`;
+    noBtn.style.zIndex = '100';
+    
+    // Change text when it moves
+    textIndex = (textIndex + 1) % noTexts.length;
+    noBtn.innerText = noTexts[textIndex];
+}
+
+// Make the button move away when the mouse gets close
+noBtn.addEventListener('mouseover', function() {
+    if (clickCount < 10) { // Keep moving until many attempts
+        moveButton();
+    }
+});
+
+// For touch devices
+noBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    moveButton();
+});
+
+// Handle "No" button click (if they manage to click it)
 noBtn.addEventListener('click', function() {
     clickCount++;
     
     // Calculate new sizes
-    // Yes button grows exponentially
-    yesBtnSize += 0.3 * Math.pow(1.2, clickCount);
-    yesBtnPadding.vertical += 5;
-    yesBtnPadding.horizontal += 10;
+    yesBtnSize += 0.5 * Math.pow(1.15, clickCount);
+    yesBtnPadding.vertical += 10;
+    yesBtnPadding.horizontal += 20;
     
-    // No button shrinks
-    noBtnSize = Math.max(0.5, noBtnSize - 0.2);
+    noBtnSize = Math.max(0.4, noBtnSize - 0.2);
     noBtnPadding.vertical = Math.max(5, noBtnPadding.vertical - 3);
     noBtnPadding.horizontal = Math.max(10, noBtnPadding.horizontal - 6);
     
@@ -34,45 +77,37 @@ noBtn.addEventListener('click', function() {
     noBtn.style.fontSize = `${noBtnSize}rem`;
     noBtn.style.padding = `${noBtnPadding.vertical}px ${noBtnPadding.horizontal}px`;
     
-    // Add shake animation to No button
-    noBtn.style.animation = 'none';
-    setTimeout(() => {
-        noBtn.style.animation = 'shake 0.5s';
-    }, 10);
+    // Move it even if clicked
+    moveButton();
     
     // After several clicks, make yes button cover most of the screen
-    if (clickCount >= 5) {
+    if (clickCount >= 6) {
         yesBtn.style.position = 'fixed';
-        yesBtn.style.top = '50%';
-        yesBtn.style.left = '50%';
-        yesBtn.style.transform = 'translate(-50%, -50%)';
-        yesBtn.style.width = '80vw';
-        yesBtn.style.height = '60vh';
-        yesBtn.style.fontSize = '3rem';
-        yesBtn.style.zIndex = '999';
-    }
-    
-    // Hide no button if it gets too small
-    if (noBtnSize <= 0.6) {
-        noBtn.style.opacity = '0.3';
-        noBtn.style.pointerEvents = 'none';
+        yesBtn.style.top = '0';
+        yesBtn.style.left = '0';
+        yesBtn.style.width = '100vw';
+        yesBtn.style.height = '100vh';
+        yesBtn.style.display = 'flex';
+        yesBtn.style.alignItems = 'center';
+        yesBtn.style.justifyContent = 'center';
+        yesBtn.style.fontSize = '5rem';
+        yesBtn.style.zIndex = '1000';
+        yesBtn.style.borderRadius = '0';
     }
 });
 
 // Handle "Yes" button click
 yesBtn.addEventListener('click', function() {
     celebration.classList.remove('hidden');
-    
-    // Create floating hearts animation
     createFloatingHearts();
 });
 
 // Create floating hearts effect
 function createFloatingHearts() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 40; i++) {
         setTimeout(() => {
             const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
+            heart.innerHTML = ['❤️', '💖', '✨', '🌹', '💕'][Math.floor(Math.random() * 5)];
             heart.style.position = 'fixed';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.top = '100vh';
@@ -80,20 +115,20 @@ function createFloatingHearts() {
             heart.style.opacity = '0';
             heart.style.transition = 'all 3s ease-out';
             heart.style.pointerEvents = 'none';
-            heart.style.zIndex = '1001';
+            heart.style.zIndex = '2000';
             
             document.body.appendChild(heart);
             
             setTimeout(() => {
                 heart.style.top = '-10vh';
                 heart.style.opacity = '1';
-                heart.style.transform = `translateX(${(Math.random() - 0.5) * 200}px) rotate(${Math.random() * 360}deg)`;
+                heart.style.transform = `translateX(${(Math.random() - 0.5) * 300}px) rotate(${Math.random() * 360}deg)`;
             }, 100);
             
             setTimeout(() => {
                 heart.remove();
             }, 3100);
-        }, i * 100);
+        }, i * 80);
     }
 }
 
