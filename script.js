@@ -1,7 +1,18 @@
 // Get button elements
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
+const questionEl = document.querySelector('.question');
 const celebration = document.getElementById('celebration');
+
+const loveQuestions = [
+    "بتحبيني يا ايه ؟",
+    "بجد يعني؟ 😉",
+    "قد البحر وسمكاته؟ 🌊",
+    "ومش هتزهقي مني خالص؟ 🥺",
+    "لو خيروكي بين لولو و انا هتختريني ؟ "
+];
+
+let currentQuestionIndex = 0;
 
 const noTexts = [
     "لا؟",
@@ -98,8 +109,29 @@ noBtn.addEventListener('click', function() {
 
 // Handle "Yes" button click
 yesBtn.addEventListener('click', function() {
-    celebration.classList.remove('hidden');
-    createFloatingHearts();
+    currentQuestionIndex++;
+    
+    if (currentQuestionIndex < loveQuestions.length) {
+        // Move to next question
+        questionEl.innerText = loveQuestions[currentQuestionIndex];
+        
+        // Add a little pop animation to the question
+        questionEl.style.animation = 'none';
+        setTimeout(() => {
+            questionEl.style.animation = 'fadeInDown 0.5s ease-out';
+        }, 10);
+
+        // Slightly pulse the yes button to show progress
+        yesBtn.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            yesBtn.style.transform = 'scale(1)';
+        }, 200);
+
+    } else {
+        // Final question answered
+        celebration.classList.remove('hidden');
+        createFloatingHearts();
+    }
 });
 
 // Create floating hearts effect
@@ -107,7 +139,7 @@ function createFloatingHearts() {
     for (let i = 0; i < 40; i++) {
         setTimeout(() => {
             const heart = document.createElement('div');
-            heart.innerHTML = ['❤️', '💖', '✨', '🌹', '💕'][Math.floor(Math.random() * 5)];
+            heart.innerHTML = ['❤️', '💖', '✨', '🌹', '💕', '🐱', '🦋'][Math.floor(Math.random() * 7)];
             heart.style.position = 'fixed';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.top = '100vh';
